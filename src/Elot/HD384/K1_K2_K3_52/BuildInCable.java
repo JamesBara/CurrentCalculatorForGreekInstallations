@@ -9,9 +9,10 @@ public class BuildInCable extends Cable {
     private static double[] aluminumCrossSection={16,25,35,50,70,95,120,150,185,240,300};
 
 
-    public BuildInCable(String conductor,String insulation,int chargedConductorsNum,boolean isMulticore){
+    public BuildInCable(String conductor,String insulation,int chargedConductorsNum,boolean isMulticore,boolean hasPipe){
         super(conductor,insulation,chargedConductorsNum);
         this.isMulticore=isMulticore;
+        this.hasPipe=hasPipe;
 }
 
 @Override
