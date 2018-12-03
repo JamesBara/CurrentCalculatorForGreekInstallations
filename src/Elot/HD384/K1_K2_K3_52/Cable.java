@@ -4,11 +4,12 @@ public abstract class Cable {
     private String conductor;
     private String insulation;
     private int chargedConductorsNum;
-
-    public Cable(String conductor, String insulation, int chargedConductorsNum){
+    private double crossSection;
+    public Cable(String conductor, String insulation, int chargedConductorsNum,double crossSection){
         this.conductor = conductor;
         this.insulation=insulation;
         this.chargedConductorsNum = chargedConductorsNum;
+        this.crossSection=crossSection;
     }
 
     //Cable insulation is either PVC or XLPE

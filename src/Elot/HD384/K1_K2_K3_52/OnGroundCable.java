@@ -5,8 +5,8 @@ public class OnGroundCable extends Cable {
     private static double[] copperCrossSection={1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300};
     private static double[] aluminumCrossSection={16,25,35,50,70,95,120,150,185,240,300};
     private int MaxCurrent;
-    public OnGroundCable(String conductor,String insulation,int chargedConductorsNum){
-        super(conductor,insulation,chargedConductorsNum);
+    public OnGroundCable(String conductor,String insulation,int chargedConductorsNum,double crossSection){
+        super(conductor,insulation,chargedConductorsNum,crossSection);
     }
 
 
