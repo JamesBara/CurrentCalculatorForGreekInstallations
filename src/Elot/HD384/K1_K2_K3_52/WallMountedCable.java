@@ -25,7 +25,7 @@ public class WallMountedCable extends Cable {
 
     public void MaxCurrent() {
         if (multicore.equals("")) {
-            if (pipe.equals("")) {
+            if (pipe.equals("asdf")) {
                 if (getInsulation().equals("PVC")) {
                     if (getChargedConductorsNum() == 2)
                         MaxCurrent = 1;
