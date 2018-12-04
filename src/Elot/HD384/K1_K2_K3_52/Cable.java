@@ -4,8 +4,8 @@ public abstract class Cable {
     private String conductor;
     private String insulation;
     private int chargedConductorsNum;
-    private double crossSection;
-    public Cable(String conductor, String insulation, int chargedConductorsNum,double crossSection){
+    private int crossSection;
+    public Cable(String conductor, String insulation, int chargedConductorsNum,int crossSectionIndex){
         this.conductor = conductor;
         this.insulation=insulation;
         this.chargedConductorsNum = chargedConductorsNum;
@@ -26,7 +26,7 @@ public abstract class Cable {
         return conductor;
     }
 
-    public abstract double[] CrossSection();
+
     //Could become int
     public abstract void MaxCurrent();
 

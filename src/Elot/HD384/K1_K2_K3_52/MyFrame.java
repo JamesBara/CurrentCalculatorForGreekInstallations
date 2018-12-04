@@ -12,28 +12,31 @@ public class MyFrame extends JFrame {
     private String conductor;
     private String insulation;
     private int chargedConductorsNum;
-    private double crossSection;
+    private int crossSectionIndex;
     private String multicore;
     private String pipe;
     private String contact;
     private String triangleSetUp;
     private String horizontalSetUp;
     private ArrayList<Cable> cableTypes;
-    private String[] crossSectionArray;
+
+
     private JPanel panel;
 
     private JComboBox<String> CableSelector;
     private JComboBox<String> ConductorMaterialSelector;
     private JComboBox<String> InsulationSelector;
     private JComboBox<String> ChargedConductorSelector;
-    private JLabel ChargedConductorLabel;
-    private JLabel InsulationLabel;
     private JLabel ConductorMaterialLabel;
     private JLabel CableTypeLabel;
     private JLabel CrossSectionLabel;
-    private JComboBox<String> CrossSectionSelector;
+    private JComboBox<String> CrossSectionType1CopperSelector;
+    private JComboBox<String> CrossSectionType1AluminumSelector;
+    private JComboBox<String> CrossSectionType2CopperSelector;
+    private JComboBox<String> CrossSectionType2AluminumSelector;
     private JLabel MultiCoreLabel;
-    private JComboBox<String> MultiCoreSelector;
+    private JComboBox<String> MultiCoreSelectorType1;
+    private JComboBox<String> MultiCoreSelectorType2;
     private JLabel PipeLabel;
     private JComboBox<String> PipeSelector;
     private JLabel ContactLabel;
@@ -42,12 +45,11 @@ public class MyFrame extends JFrame {
     private JComboBox<String> TriangleSetUpSelector;
     private JLabel HorizontalSetUpLabel;
     private JComboBox<String> HorizontalSetUpSelector;
-    private JLabel CurrentCalculatorLabel;
     private JButton CurrentCalculatorButton;
-    BuildInCable binc;
-    WallMountedCable wmc;
-    AerialCable ac;
-    OnGroundCable ogc;
+    private BuildInCable binc;
+    private WallMountedCable wmc;
+    private AerialCable ac;
+    private OnGroundCable ogc;
 
     public MyFrame() {
 
@@ -87,10 +89,10 @@ public class MyFrame extends JFrame {
         panel.add(ConductorMaterialSelector);
 
         //Create JLabel for InsulationLabel
-        InsulationLabel = new JLabel("Υλικό Μόνωσης.", JLabel.CENTER);
-        InsulationLabel.setVerticalAlignment(JLabel.TOP);
-        InsulationLabel.setLabelFor(InsulationSelector);
-        panel.add(InsulationLabel);
+        JLabel insulationLabel = new JLabel("Υλικό Μόνωσης.", JLabel.CENTER);
+        insulationLabel.setVerticalAlignment(JLabel.TOP);
+        insulationLabel.setLabelFor(InsulationSelector);
+        panel.add(insulationLabel);
         //Create ComboBox for InsulationSelector
         String[] insulationItems = {"PVC", "EPR ή XLPE"};
         InsulationSelector = new JComboBox<>(insulationItems);
@@ -101,10 +103,10 @@ public class MyFrame extends JFrame {
         panel.add(InsulationSelector);
 
         //Create JLabel for ChargedConductorLabel
-        ChargedConductorLabel = new JLabel("Πλήθος φορτιζόμενων αγωγών.", JLabel.CENTER);
-        ChargedConductorLabel.setVerticalAlignment(JLabel.TOP);
-        ChargedConductorLabel.setLabelFor(ChargedConductorSelector);
-        panel.add(ChargedConductorLabel);
+        JLabel chargedConductorLabel = new JLabel("Πλήθος φορτιζόμενων αγωγών.", JLabel.CENTER);
+        chargedConductorLabel.setVerticalAlignment(JLabel.TOP);
+        chargedConductorLabel.setLabelFor(ChargedConductorSelector);
+        panel.add(chargedConductorLabel);
         //Create ComboBox for ChargedConductorSelector
         String[] chargedConductorItems = {"2", "3"};
         ChargedConductorSelector = new JComboBox<>(chargedConductorItems);
@@ -117,18 +119,29 @@ public class MyFrame extends JFrame {
         //Create JLabel for MultiCoreLabel
         MultiCoreLabel = new JLabel("Είδος καλωδίου.", JLabel.CENTER);
         MultiCoreLabel.setVerticalAlignment(JLabel.TOP);
-        MultiCoreLabel.setLabelFor(MultiCoreSelector);
         MultiCoreLabel.setVisible(false);
         panel.add(MultiCoreLabel);
         //Create ComboBox for MultiCoreSelector
-        MultiCoreSelector = new JComboBox<>();
-        MultiCoreListener mcl = new MultiCoreListener();
-        MultiCoreSelector.addActionListener(mcl);
-        MultiCoreSelector.setSelectedIndex(-1);
-        MultiCoreSelector.setEditable(false);
-        MultiCoreSelector.setVisible(false);
-        MultiCoreSelector.setEnabled(false);
-        panel.add(MultiCoreSelector);
+        String[] MultiCoreItemsType1 = {"Μονωμένοι αγωγοί σε σωλήνα", "Πολυπολικά καλώδια"};
+        MultiCoreSelectorType1 = new JComboBox<>(MultiCoreItemsType1);
+        MultiCoreType1Listener mcl1 = new MultiCoreType1Listener();
+        MultiCoreSelectorType1.addActionListener(mcl1);
+        MultiCoreSelectorType1.setSelectedIndex(-1);
+        MultiCoreSelectorType1.setEditable(false);
+        MultiCoreSelectorType1.setVisible(false);
+        MultiCoreSelectorType1.setEnabled(false);
+        panel.add(MultiCoreSelectorType1);
+
+        //Create ComboBox for MultiCoreSelector
+        String[] MultiCoreItemsType2 = {"Μονοπολικά καλώδια", "Πολυπολικά καλώδια"};
+        MultiCoreSelectorType2 = new JComboBox<>(MultiCoreItemsType2);
+        MultiCoreType2Listener mcl2 = new MultiCoreType2Listener();
+        MultiCoreSelectorType2.addActionListener(mcl2);
+        MultiCoreSelectorType2.setSelectedIndex(-1);
+        MultiCoreSelectorType2.setEditable(false);
+        MultiCoreSelectorType2.setVisible(false);
+        MultiCoreSelectorType2.setEnabled(false);
+        panel.add(MultiCoreSelectorType2);
 
         //Create JLabel for PipeLabel
         PipeLabel = new JLabel("Υπαρξη σωλήνα.", JLabel.CENTER);
@@ -199,36 +212,66 @@ public class MyFrame extends JFrame {
         panel.add(HorizontalSetUpSelector);
 
         //Create JLabel for CrossSection
-        CrossSectionLabel = new JLabel("Διατομή αγωγών mm2.", JLabel.CENTER);
+        CrossSectionLabel = new JLabel("Διατομή αγωγών σε mm2.", JLabel.CENTER);
         CrossSectionLabel.setVerticalAlignment(JLabel.TOP);
-        CrossSectionLabel.setLabelFor(CrossSectionSelector);
+        CrossSectionLabel.setVisible(false);
         panel.add(CrossSectionLabel);
-        //Create ComboBox for CrossSection Selector (Box is created elsewhere.
-        crossSectionArray = new String[]{"1.5", "2.5", "4", "6", "10", "16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300", "400", "500", "630"};
-        CrossSectionSelector = new JComboBox<>(crossSectionArray);
-        CrossSectionListener cslll = new CrossSectionListener();
-        CrossSectionSelector.addActionListener(cslll);
-        CrossSectionSelector.setEditable(false);
-        panel.add(CrossSectionSelector);
 
-        //Create JLabel for HorizontalSetUpLabel
-        CurrentCalculatorLabel = new JLabel("Υπολογισμός μέγιστης φόρτησης καλωδίου.", JLabel.CENTER);
-        CurrentCalculatorLabel.setVerticalAlignment(JLabel.TOP);
-        CurrentCalculatorLabel.setLabelFor(HorizontalSetUpSelector);
-        panel.add(CurrentCalculatorLabel);
-        //Create ComboBox for TriangleSetUpSelector
+        //Create ComboBox for CrossSection Selector for 52-K1 and 52-K3 Copper
+        String[] crossSectionArrayType1Copper = new String[]{"1.5", "2.5", "4", "6", "10", "16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300"};
+        CrossSectionType1CopperSelector = new JComboBox<>(crossSectionArrayType1Copper);
+        CrossSectionType1CopperListener cst1cl = new CrossSectionType1CopperListener();
+        CrossSectionType1CopperSelector.addActionListener(cst1cl);
+        CrossSectionType1CopperSelector.setSelectedIndex(0);
+        CrossSectionType1CopperSelector.setEditable(false);
+        CrossSectionType1CopperSelector.setVisible(false);
+        CrossSectionType1CopperSelector.setEnabled(false);
+        panel.add(CrossSectionType1CopperSelector);
 
+        //Create ComboBox for CrossSection Selector for 52-K1 and 52-K3 Aluminum
+        String[] crossSectionArrayType1Aluminum = new String[]{"16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300"};
+        CrossSectionType1AluminumSelector = new JComboBox<>(crossSectionArrayType1Aluminum);
+        CrossSectionType1AluminumListener cst1al = new CrossSectionType1AluminumListener();
+        CrossSectionType1AluminumSelector.addActionListener(cst1al);
+        CrossSectionType1AluminumSelector.setSelectedIndex(0);
+        CrossSectionType1AluminumSelector.setEditable(false);
+        CrossSectionType1AluminumSelector.setVisible(false);
+        CrossSectionType1AluminumSelector.setEnabled(false);
+        panel.add(CrossSectionType1AluminumSelector);
+
+        //Create ComboBox for CrossSection Selector for 52-K2 Copper
+        String[] crossSectionArrayType2Copper = new String[]{"1.5", "2.5", "4", "6", "10", "16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300", "400", "500", "630"};
+        CrossSectionType2CopperSelector = new JComboBox<>(crossSectionArrayType2Copper);
+        CrossSectionType2CopperListener cst2cl = new CrossSectionType2CopperListener();
+        CrossSectionType2CopperSelector.addActionListener(cst2cl);
+        CrossSectionType2CopperSelector.setSelectedIndex(0);
+        CrossSectionType2CopperSelector.setEditable(false);
+        CrossSectionType2CopperSelector.setVisible(false);
+        CrossSectionType2CopperSelector.setEnabled(false);
+        panel.add(CrossSectionType2CopperSelector);
+
+        //Create ComboBox for CrossSection Selector for 52-K2 Aluminum
+        String[] crossSectionArrayType2Aluminum = new String[]{"16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300", "400", "500", "630"};
+        CrossSectionType2AluminumSelector = new JComboBox<>(crossSectionArrayType2Aluminum);
+        CrossSectionType2AluminumListener cst2al = new CrossSectionType2AluminumListener();
+        CrossSectionType2AluminumSelector.addActionListener(cst2al);
+        CrossSectionType2AluminumSelector.setSelectedIndex(0);
+        CrossSectionType2AluminumSelector.setEditable(false);
+        CrossSectionType2AluminumSelector.setVisible(false);
+        CrossSectionType2AluminumSelector.setEnabled(false);
+        panel.add(CrossSectionType2AluminumSelector);
+
+        //Create JLabel for CurrentCalculatorButton
+        JLabel currentCalculatorLabel = new JLabel("Υπολογισμός μέγιστης φόρτισης καλωδίου.", JLabel.CENTER);
+        currentCalculatorLabel.setVerticalAlignment(JLabel.TOP);
+        currentCalculatorLabel.setLabelFor(HorizontalSetUpSelector);
+        panel.add(currentCalculatorLabel);
+
+        //Create ComboBox for CurrentCalculatorButton
         CurrentCalculatorButton = new JButton("Click Here");
         CurrentCalculatorButtonListener ccbl = new CurrentCalculatorButtonListener();
         CurrentCalculatorButton.addActionListener(ccbl);
         panel.add(CurrentCalculatorButton);
-
-
-
-
-
-
-
 
         this.setVisible(true);
         this.setSize(1000, 1000);
@@ -249,33 +292,19 @@ public class MyFrame extends JFrame {
                 case 0:
                     resetAll();
                     cableIndex = 0;
-                    setMultiCore();
-                    MultiCoreSelector.removeAllItems();
-                    MultiCoreSelector.addItem("Μονωμένοι αγωγοί σε σωλήνα");
-                    MultiCoreSelector.addItem("Πολυπολικά καλώδια");
-                    MultiCoreSelector.setSelectedIndex(-1);
-
+                    setMultiCoreType1();
                     break;
                 //case 1 is "Επιτοίχιο"
                 case 1:
                     resetAll();
                     cableIndex = 1;
-                    setMultiCore();
-                    MultiCoreSelector.removeAllItems();
-                    MultiCoreSelector.addItem("Μονωμένοι αγωγοί σε σωλήνα");
-                    MultiCoreSelector.addItem("Πολυπολικά καλώδια");
-                    MultiCoreSelector.setSelectedIndex(-1);
-
+                    setMultiCoreType1();
                     break;
                 //case 2 is "Στον αέρα"
                 case 2:
                     resetAll();
                     cableIndex = 2;
-                    setMultiCore();
-                    MultiCoreSelector.removeAllItems();
-                    MultiCoreSelector.addItem("Μονοπολικά καλώδια");
-                    MultiCoreSelector.addItem("Πολυπολικά καλώδια");
-                    MultiCoreSelector.setSelectedIndex(-1);
+                    setMultiCoreType2();
                     break;
                 //case 3 is "Στο έδαφος"
                 case 3:
@@ -314,12 +343,27 @@ public class MyFrame extends JFrame {
                 //case 0 is "Χαλκός"
                 case 0:
                     conductor = "Copper";
+                    if (cableIndex!=2) {
+                        resetAllCrossSection();
+                        setCrossSectionType1Copper();
+                    }
+                    else{
+                        resetAllCrossSection();
+                        setCrossSectionType2Copper();
+                    }
                     break;
                 //case 1 is "Αλουμίνιο"
                 case 1:
                     conductor = "Aluminum";
+                    if (cableIndex!=2) {
+                        resetAllCrossSection();
+                        setCrossSectionType1Aluminum();
+                    }
+                    else{
+                        resetAllCrossSection();
+                        setCrossSectionType2Aluminum();
+                    }
                     break;
-
             }
         }
     }
@@ -343,49 +387,53 @@ public class MyFrame extends JFrame {
     }
 
     //Listener for ChargedConductorSelector ComboBox
-    class MultiCoreListener implements ActionListener {
+    class MultiCoreType1Listener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            int i = MultiCoreSelector.getSelectedIndex();
+            int i = MultiCoreSelectorType1.getSelectedIndex();
             switch (i) {
-                //case 0 is "Μονοπολικά καλώδια" or "Μονωμένοι αγωγοί σε σωλήνα"
+                //case 0 "Μονωμένοι αγωγοί σε σωλήνα"
                 case 0:
-                    if ("Μονοπολικά καλώδια".equals(MultiCoreSelector.getSelectedItem()) && cableIndex == 2) {
-                        multicore = "Single Core";
                         resetPipe();
-                        setContact();
-                        resetHorizontalSetUp();
-                        resetTriangleSetUp();
-
-                    } else if ("Μονωμένοι αγωγοί σε σωλήνα".equals(MultiCoreSelector.getSelectedItem()) && (cableIndex == 0||cableIndex == 1)) {
-                        multicore = "No cores";
-                        resetPipe();
-                        pipe = "no pipe";
                         resetContact();
                         resetHorizontalSetUp();
                         resetTriangleSetUp();
-
-                    }
-
                     break;
                 //case 1 is "Πολυπολικά καλώδια"
                 case 1:
-                    if ("Πολυπολικά καλώδια".equals(MultiCoreSelector.getSelectedItem()) && cableIndex == 2) {
-                        multicore = "Multi Core";
-                        resetPipe();
-                        resetContact();
-                        resetHorizontalSetUp();
-                        resetTriangleSetUp();
-
-                    } else if ("Πολυπολικά καλώδια".equals(MultiCoreSelector.getSelectedItem()) && (cableIndex == 0||cableIndex == 1)) {
                         multicore = "Multi Core";
                         resetPipe();
                         setPipe();
                         resetContact();
                         resetHorizontalSetUp();
                         resetTriangleSetUp();
+                    break;
+            }
+        }
+    }
 
-                    }
+    //Listener for ChargedConductorSelector ComboBox
+    class MultiCoreType2Listener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            int i = MultiCoreSelectorType2.getSelectedIndex();
+            switch (i) {
+                //case 0 "Μονοπολικά καλώδια"
+                case 0:
+                    multicore = "Single Core";
+                    resetContact();
+                    resetPipe();
+                    setContact();
+                    resetHorizontalSetUp();
+                    resetTriangleSetUp();
+                    break;
+                //case 1 is "Πολυπολικά καλώδια"
+                case 1:
+                    multicore = "Multi Core";
+                    resetPipe();
+                    resetContact();
+                    resetHorizontalSetUp();
+                    resetTriangleSetUp();
                     break;
             }
         }
@@ -450,7 +498,6 @@ public class MyFrame extends JFrame {
         }
     }
 
-
     //Listener for TriangleSetUpSelector ComboBox
     class HorizontalSetUpListener implements ActionListener {
 
@@ -470,42 +517,79 @@ public class MyFrame extends JFrame {
     }
 
 
-    //Listener for CrossSectionSelector ComboBox
-    class CrossSectionListener implements ActionListener {
+    //Listener for CrossSection Comboboxes
+    class CrossSectionType1CopperListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            int i = CrossSectionSelector.getSelectedIndex();
-            crossSection = Double.parseDouble(CrossSectionSelector.getItemAt(i));
-            System.out.println(crossSection);
-            }
+            crossSectionIndex = CrossSectionType1CopperSelector.getSelectedIndex();
         }
+    }
 
+    class CrossSectionType1AluminumListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            crossSectionIndex= CrossSectionType1AluminumSelector.getSelectedIndex();
+        }
+    }
+    class CrossSectionType2CopperListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            crossSectionIndex = CrossSectionType2CopperSelector.getSelectedIndex();
+        }
+    }
+    class CrossSectionType2AluminumListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            crossSectionIndex = CrossSectionType2AluminumSelector.getSelectedIndex();
+        }
+    }
+
+    //Listener for CurrentCalculatorButton
     class CurrentCalculatorButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             switch (cableIndex){
                 case 0:
-                if (!buildInOrWallMountedCablesErrorCheck())
-                    binc = new BuildInCable(conductor, insulation, chargedConductorsNum, multicore, pipe, crossSection);
-                else
+                if (buildInOrWallMountedCablesErrorCheck())
                     JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                else{
+                    binc = new BuildInCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
+                    if (multicore!=null)
+                    binc.setMulticore(multicore);
+                    if (pipe!=null)
+                    binc.setPipe(pipe);
+                    System.out.println(crossSectionIndex);
+                }
                     break;
                 case 1:
-                if (!buildInOrWallMountedCablesErrorCheck())
-                    wmc = new WallMountedCable(conductor, insulation, chargedConductorsNum, multicore, pipe, crossSection);
-                else
+                if (buildInOrWallMountedCablesErrorCheck())
                     JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                else {
+                    wmc = new WallMountedCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
+                    wmc.setMulticore(multicore);
+                    if (pipe!=null)
+                    wmc.setPipe(pipe);
+                }
                     break;
                 case 2:
-                if (!aerialCableErrorCheck())
-                    ac = new AerialCable(conductor, insulation, chargedConductorsNum, multicore, contact, triangleSetUp, horizontalSetUp, crossSection);
-                else
+                if (aerialCableErrorCheck())
                     JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                else {
+                    ac = new AerialCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
+                    ac.setMulticore(multicore);
+                    if (contact!=null)
+                        ac.setContact(contact);
+                    if (triangleSetUp!=null)
+                        ac.setTriangleSetUp(triangleSetUp);
+                    if (horizontalSetUp!=null)
+                        ac.setHorizontalSetUp(horizontalSetUp);
+
+                }
                     break;
                 case 3:
-                if (!onGroundCableErrorCheck())
-                    ogc = new OnGroundCable(conductor, insulation, chargedConductorsNum,crossSection);
-                else
+                if (onGroundCableErrorCheck())
                     JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                else
+                    ogc = new OnGroundCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
                     break;
             }
 
@@ -517,19 +601,36 @@ public class MyFrame extends JFrame {
      * set means visible
      */
 
-    private void resetMultiCore() {
+    private void resetMultiCoreType1() {
         MultiCoreLabel.setVisible(false);
-        MultiCoreSelector.setVisible(false);
-        MultiCoreSelector.setEnabled(false);
-        MultiCoreSelector.setSelectedIndex(-1);
+        MultiCoreSelectorType1.setVisible(false);
+        MultiCoreSelectorType1.setEnabled(false);
+        MultiCoreSelectorType1.setSelectedIndex(-1);
         chargedConductorsNum = 0;
     }
 
-    private void setMultiCore() {
+    private void setMultiCoreType1() {
+        MultiCoreLabel.setLabelFor(MultiCoreSelectorType1);
         MultiCoreLabel.setVisible(true);
-        MultiCoreSelector.setVisible(true);
-        MultiCoreSelector.setEnabled(true);
-        MultiCoreSelector.setSelectedIndex(-1);
+        MultiCoreSelectorType1.setVisible(true);
+        MultiCoreSelectorType1.setEnabled(true);
+        MultiCoreSelectorType1.setSelectedIndex(-1);
+    }
+
+    private void resetMultiCoreType2() {
+        MultiCoreLabel.setVisible(false);
+        MultiCoreSelectorType2.setVisible(false);
+        MultiCoreSelectorType2.setEnabled(false);
+        MultiCoreSelectorType2.setSelectedIndex(-1);
+        chargedConductorsNum = 0;
+    }
+
+    private void setMultiCoreType2() {
+        MultiCoreLabel.setLabelFor(MultiCoreSelectorType2);
+        MultiCoreLabel.setVisible(true);
+        MultiCoreSelectorType2.setVisible(true);
+        MultiCoreSelectorType2.setEnabled(true);
+        MultiCoreSelectorType2.setSelectedIndex(-1);
     }
 
     private void resetPipe() {
@@ -595,12 +696,85 @@ public class MyFrame extends JFrame {
 
     }
 
+    private void resetCrossSectionType1Copper() {
+        CrossSectionLabel.setVisible(false);
+        CrossSectionType1CopperSelector.setVisible(false);
+        CrossSectionType1CopperSelector.setEnabled(false);
+        CrossSectionType1CopperSelector.setSelectedIndex(0);
+        crossSectionIndex = 0;
+    }
+
+    private void setCrossSectionType1Copper() {
+        CrossSectionLabel.setVisible(true);
+        CrossSectionLabel.setLabelFor(CrossSectionType1CopperSelector);
+        CrossSectionType1CopperSelector.setVisible(true);
+        CrossSectionType1CopperSelector.setEnabled(true);
+        CrossSectionType1CopperSelector.setSelectedIndex(0);
+    }
+
+    private void resetCrossSectionType1Aluminum() {
+        CrossSectionLabel.setVisible(false);
+        CrossSectionType1AluminumSelector.setVisible(false);
+        CrossSectionType1AluminumSelector.setEnabled(false);
+        CrossSectionType1AluminumSelector.setSelectedIndex(0);
+        crossSectionIndex = 0;
+    }
+
+    private void setCrossSectionType1Aluminum() {
+        CrossSectionLabel.setVisible(true);
+        CrossSectionLabel.setLabelFor(CrossSectionType1AluminumSelector);
+        CrossSectionType1AluminumSelector.setVisible(true);
+        CrossSectionType1AluminumSelector.setEnabled(true);
+        CrossSectionType1AluminumSelector.setSelectedIndex(0);
+    }
+
+    private void resetCrossSectionType2Copper() {
+        HorizontalSetUpLabel.setVisible(false);
+        CrossSectionType2CopperSelector.setVisible(false);
+        CrossSectionType2CopperSelector.setEnabled(false);
+        CrossSectionType2CopperSelector.setSelectedIndex(0);
+        crossSectionIndex = 0;
+    }
+
+    private void setCrossSectionType2Copper() {
+        CrossSectionLabel.setVisible(true);
+        CrossSectionLabel.setLabelFor(CrossSectionType2CopperSelector);
+        CrossSectionType2CopperSelector.setVisible(true);
+        CrossSectionType2CopperSelector.setEnabled(true);
+        CrossSectionType2CopperSelector.setSelectedIndex(0);
+    }
+
+    private void resetCrossSectionType2Aluminum() {
+        CrossSectionLabel.setVisible(false);
+        CrossSectionType2AluminumSelector.setVisible(false);
+        CrossSectionType2AluminumSelector.setEnabled(false);
+        CrossSectionType2AluminumSelector.setSelectedIndex(0);
+        crossSectionIndex = 0;
+    }
+
+    private void setCrossSectionType2Aluminum() {
+        CrossSectionLabel.setVisible(true);
+        CrossSectionLabel.setLabelFor(CrossSectionType2AluminumSelector);
+        CrossSectionType2AluminumSelector.setVisible(true);
+        CrossSectionType2AluminumSelector.setEnabled(true);
+        CrossSectionType2AluminumSelector.setSelectedIndex(0);
+    }
+
+    private void resetAllCrossSection(){
+        resetCrossSectionType1Copper();
+        resetCrossSectionType1Aluminum();
+        resetCrossSectionType2Copper();
+        resetCrossSectionType2Aluminum();
+    }
+
     private void resetAll() {
         resetContact();
         resetHorizontalSetUp();
-        resetMultiCore();
+        resetMultiCoreType1();
+        resetMultiCoreType2();
         resetPipe();
         resetTriangleSetUp();
+        resetAllCrossSection();
         ConductorMaterialSelector.setSelectedIndex(-1);
         InsulationSelector.setSelectedIndex(-1);
         ChargedConductorSelector.setSelectedIndex(-1);
@@ -620,10 +794,22 @@ public class MyFrame extends JFrame {
 
     }
     private boolean buildInOrWallMountedCablesErrorCheck() {
-        return (conductor==null || insulation==null || chargedConductorsNum == 0 || multicore==null||pipe==null);
+
+        if (conductor==null || insulation==null || chargedConductorsNum == 0)
+            return true;
+        return ("Multi Core".equals(multicore)&&pipe==null);
+
     }
+
     private boolean aerialCableErrorCheck() {
-        return (conductor==null || insulation==null || chargedConductorsNum == 0 || multicore==null || contact==null || triangleSetUp==null || horizontalSetUp==null);
+
+        if (conductor==null || insulation==null || chargedConductorsNum == 0 || multicore==null)
+        return true;
+        else if ("Single Core".equals(multicore)&&contact==null)
+            return true;
+        else if ("Cables in contact".equals(contact)&&triangleSetUp==null)
+            return true;
+        return ("Cables not in contact".equals(contact)&&horizontalSetUp==null);
     }
 
 
