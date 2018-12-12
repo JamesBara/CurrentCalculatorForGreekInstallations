@@ -7,11 +7,12 @@ import java.awt.event.ActionListener;
 
 
 /* TODO
-*
-* Adding comments to clarify things.
-*Making GUI more presentable.
-*
-* */
+
+    clarify more things
+    empty the JLabel ResultLabel contents
+    after the user changes a choice.
+
+*/
 
 
 
@@ -29,7 +30,14 @@ public class MyFrame extends JFrame {
     private String triangleSetUp;
     private String horizontalSetUp;
 
-    private JPanel panel;
+    private JPanel framePanel;
+    private JPanel topPanel;
+    private JPanel hiddenComponentsPanel;
+    private JPanel bottomPanel;
+
+
+
+
 
     private JComboBox<String> CableSelector;
     private JComboBox<String> ConductorMaterialSelector;
@@ -63,121 +71,188 @@ public class MyFrame extends JFrame {
 
     public MyFrame() {
 
-        panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx=0;
-        gbc.gridy=0;
+        //Creating the layout managers
 
-        this.setContentPane(panel);
+        FlowLayout fl = new FlowLayout();
+        GridLayout grl = new GridLayout(3,1);
 
 
-        //Create JLabel for CableTypeLabel
+
+        /*
+
+         I have created  4 different panels, the topPanel includes the components that should appear on the top side
+         of the window in the order defined by FlowLayout manager (from left to right).
+
+         The hiddenComponentPanel includes the components that are hidden and should appear in the middle of the window
+         in the order defined by FlowLayout manager (from left to right).
+
+         The bottomPanel includes  the components that should appear on the bottom side of the window in the order
+         defined by FlowLayout manager (from left to right).
+
+         The framePanel includes all of the above panels  in the order defined by GridLayout manager (from top to bottom).
+
+         */
+
+        //Creating the JPanels  that use FlowLayout.
+        topPanel = new JPanel();
+        topPanel.setLayout(fl);
+        hiddenComponentsPanel = new JPanel();
+        hiddenComponentsPanel.setLayout(fl);
+        bottomPanel = new JPanel();
+        bottomPanel.setLayout(fl);
+
+        //Create the JPanel that uses GridLayout and includes the other panels.
+        framePanel = new JPanel();
+        framePanel.setLayout(grl);
+        framePanel.add(topPanel);
+        framePanel.add(hiddenComponentsPanel);
+        framePanel.add(bottomPanel);
+
+
+
+
+        // In this part I have created all the Jlabels and their respective Comboboxes, as well as Button.
+
+
+
+
+
+        //This label informs the user that he has to choose a cable in the combobox.
         CableTypeLabel = new JLabel("Είδη ηλεκτρικών γραμμών:");
-        panel.add(CableTypeLabel,gbc);
-        gbc.gridx=1;
-        //Create ComboBox for CableSelector
+        //The label is added to the top panel.
+        topPanel.add(CableTypeLabel);
+
+        //This combobox includes 4 cables (classes).
         String[] CableSelectorItems = {"Εντοιχισμένο", "Επιτοίχιο", "Στον αέρα", "Στο έδαφος"};
         CableSelector = new JComboBox<>(CableSelectorItems);
+        //There is also a listener that performs actions depending on the user's choice.
         CableSelectorListener ctl = new CableSelectorListener();
         CableSelector.addActionListener(ctl);
+        //The combobox shouldn't be editable and should start from a blank selection.
         CableSelector.setSelectedIndex(-1);
         CableSelector.setEditable(false);
-        panel.add(CableSelector,gbc);
-        gbc.gridx=2;
+        //The combobox is added to the top panel.
+        topPanel.add(CableSelector);
 
-        //Create JLabel for ConductorMaterialLabel
+
+        //This label informs the user that he has to choose a conductor material in the combobox.
         ConductorMaterialLabel = new JLabel("Υλικό αγωγού:");
-        panel.add(ConductorMaterialLabel,gbc);
-        gbc.gridx=3;
-        //Create ComboBox for ConductorMaterialSelector
+        //The label is added to the top panel.
+        topPanel.add(ConductorMaterialLabel);
+
+        //This combobox includes 2 conductor materials.
         String[] conductorMaterialItems = {"Χαλκός", "Αλουμίνιο"};
         ConductorMaterialSelector = new JComboBox<>(conductorMaterialItems);
+        //There is also a listener that performs actions depending on the user's choice.
         ConductorMaterialListener cml = new ConductorMaterialListener();
         ConductorMaterialSelector.addActionListener(cml);
+        //The combobox shouldn't be editable and should start from a blank selection.
         ConductorMaterialSelector.setSelectedIndex(-1);
         ConductorMaterialSelector.setEditable(false);
-        panel.add(ConductorMaterialSelector,gbc);
-        gbc.gridx=4;
+        //The combobox is added to the top panel.
+        topPanel.add(ConductorMaterialSelector);
 
-        //Create JLabel for InsulationLabel
+
+        //This label informs the user that he has to choose an insulation material in the combobox.
         JLabel insulationLabel = new JLabel("Υλικό Μόνωσης:");
-        panel.add(insulationLabel,gbc);
-        gbc.gridx=5;
-        //Create ComboBox for InsulationSelector
+        //The label is added to the top panel.
+        topPanel.add(insulationLabel);
+
+        //This combobox includes 2 insulation materials.
         String[] insulationItems = {"PVC", "EPR ή XLPE"};
         InsulationSelector = new JComboBox<>(insulationItems);
+        //There is also a listener that performs actions depending on the user's choice.
         InsulationListener insl = new InsulationListener();
         InsulationSelector.addActionListener(insl);
+        //The combobox shouldn't be editable and should start from a blank selection.
         InsulationSelector.setSelectedIndex(-1);
         InsulationSelector.setEditable(false);
-        panel.add(InsulationSelector,gbc);
-        gbc.gridx=6;
+        //The combobox is added to the top panel.
+        topPanel.add(InsulationSelector);
 
-        //Create JLabel for ChargedConductorLabel
+
+        //This label informs the user that he has to choose the number of charged conductors in the combobox.
         JLabel chargedConductorLabel = new JLabel("Πλήθος φορτιζόμενων αγωγών:");
-        panel.add(chargedConductorLabel,gbc);
-        gbc.gridx=7;
-        //Create ComboBox for ChargedConductorSelector
+        //The label is added to the top panel.
+        topPanel.add(chargedConductorLabel);
+
+        //This combobox includes either 2 or 3 charged conductors.
         String[] chargedConductorItems = {"2", "3"};
         ChargedConductorSelector = new JComboBox<>(chargedConductorItems);
+        //There is also a listener that performs actions depending on the user's choice.
         ChargedConductorListener ccl = new ChargedConductorListener();
         ChargedConductorSelector.addActionListener(ccl);
+        //The combobox shouldn't be editable and should start from a blank selection.
         ChargedConductorSelector.setSelectedIndex(-1);
         ChargedConductorSelector.setEditable(false);
-        panel.add(ChargedConductorSelector,gbc);
-        gbc.gridx=0;
-        gbc.gridy=1;
+        //The combobox is added to the top panel.
+        topPanel.add(ChargedConductorSelector);
 
-        //Create JLabel for MultiCoreLabel
+        //This label informs the user that he has to choose the number of cores in the combobox.
         MultiCoreLabel = new JLabel("Είδος καλωδίου:");
+        //This label should be invisible as a default.
         MultiCoreLabel.setVisible(false);
-        panel.add(MultiCoreLabel,gbc);
-        gbc.gridx=1;
-        //Create ComboBox for MultiCoreSelector
+        //The label is added to the middle panel.
+        hiddenComponentsPanel.add(MultiCoreLabel);
+
+        //The type 1 combobox refers to cables from either the build-in class, or the wall mounted class.
+        //It includes either multi core cables or no specified number of cores cables.
         String[] MultiCoreItemsType1 = {"Μονωμένοι αγωγοί σε σωλήνα", "Πολυπολικά καλώδια"};
         MultiCoreSelectorType1 = new JComboBox<>(MultiCoreItemsType1);
+        //There is also a listener that performs actions depending on the user's choice.
         MultiCoreType1Listener mcl1 = new MultiCoreType1Listener();
         MultiCoreSelectorType1.addActionListener(mcl1);
+        //The combobox shouldn't be editable, should start from a blank selection and should be invisible as a default.
         MultiCoreSelectorType1.setSelectedIndex(-1);
         MultiCoreSelectorType1.setEditable(false);
         MultiCoreSelectorType1.setVisible(false);
         MultiCoreSelectorType1.setEnabled(false);
-        panel.add(MultiCoreSelectorType1,gbc);
+        //The combobox is added to the middle panel.
+        hiddenComponentsPanel.add(MultiCoreSelectorType1);
 
-        //Create ComboBox for MultiCoreSelector
+        //The type 2 combobox refers to cables from aerial cable class.
+        //It includes either single core or multi core cables.
         String[] MultiCoreItemsType2 = {"Μονοπολικά καλώδια", "Πολυπολικά καλώδια"};
         MultiCoreSelectorType2 = new JComboBox<>(MultiCoreItemsType2);
+        //There is also a listener that performs actions depending on the user's choice.
         MultiCoreType2Listener mcl2 = new MultiCoreType2Listener();
         MultiCoreSelectorType2.addActionListener(mcl2);
+        //The combobox shouldn't be editable, should start from a blank selection and should be invisible as a default.
         MultiCoreSelectorType2.setSelectedIndex(-1);
         MultiCoreSelectorType2.setEditable(false);
         MultiCoreSelectorType2.setVisible(false);
         MultiCoreSelectorType2.setEnabled(false);
-        panel.add(MultiCoreSelectorType2,gbc);
-        gbc.gridx=2;
+        //The combobox is added to the middle panel.
+        hiddenComponentsPanel.add(MultiCoreSelectorType2);
 
-        //Create JLabel for PipeLabel
+
+        //This label informs the user that he has to set the existance of a pipe combobox.
         PipeLabel = new JLabel("Υπαρξη σωλήνα:");
+        //This label should be invisible as a default.
         PipeLabel.setVisible(false);
-        panel.add(PipeLabel,gbc);
-        gbc.gridx=3;
-        //Create ComboBox for PipeSelector
+        //The label is added to the middle panel.
+        hiddenComponentsPanel.add(PipeLabel);
+
+        //This combobox includes  whether a pipe exists or not.
         String[] PipeItems = {"Γυμνό", "Σε σωλήνα"};
         PipeSelector = new JComboBox<>(PipeItems);
+        //There is also a listener that performs actions depending on the user's choice.
         PipeListener pipel = new PipeListener();
         PipeSelector.addActionListener(pipel);
+        //The combobox shouldn't be editable, should start from a blank selection and should be invisible as a default.
         PipeSelector.setSelectedIndex(-1);
         PipeSelector.setEditable(false);
         PipeSelector.setVisible(false);
         PipeSelector.setEnabled(false);
-        panel.add(PipeSelector,gbc);
-        gbc.gridx=2;
+        //The combobox is added to the middle panel.
+        hiddenComponentsPanel.add(PipeSelector);
+
 
         //Create JLabel for ContactLabel
         ContactLabel = new JLabel("Γειτνίαση:");
         ContactLabel.setVisible(false);
-        panel.add(ContactLabel,gbc);
-        gbc.gridx=3;
+        hiddenComponentsPanel.add(ContactLabel);
+
         //Create ComboBox for ContactSelector
         String[] ContactItems = {"Σε επαφή μεταξύ τους", "Σε απόσταση μεταξύ τους"};
         ContactSelector = new JComboBox<>(ContactItems);
@@ -187,14 +262,14 @@ public class MyFrame extends JFrame {
         ContactSelector.setEditable(false);
         ContactSelector.setVisible(false);
         ContactSelector.setEnabled(false);
-        panel.add(ContactSelector,gbc);
-        gbc.gridx=4;
+        hiddenComponentsPanel.add(ContactSelector);
+
 
         //Create JLabel for TriangleSetUpLabel
         TriangleSetUpLabel = new JLabel("Διάταξη:");
         TriangleSetUpLabel.setVisible(false);
-        panel.add(TriangleSetUpLabel,gbc);
-        gbc.gridx=5;
+        hiddenComponentsPanel.add(TriangleSetUpLabel);
+
         //Create ComboBox for TriangleSetUpSelector
         String[] triangleSetUpItems = {"∆ιάταξη επίπεδη οριζόντια ή κατακόρυφη", "∆ιάταξη τριγωνική"};
         TriangleSetUpSelector = new JComboBox<>(triangleSetUpItems);
@@ -204,14 +279,14 @@ public class MyFrame extends JFrame {
         TriangleSetUpSelector.setEditable(false);
         TriangleSetUpSelector.setVisible(false);
         TriangleSetUpSelector.setEnabled(false);
-        panel.add(TriangleSetUpSelector,gbc);
-        gbc.gridx=4;
+        hiddenComponentsPanel.add(TriangleSetUpSelector);
+
 
         //Create JLabel for HorizontalSetUpLabel
         HorizontalSetUpLabel = new JLabel("Διάταξη:");
         HorizontalSetUpLabel.setVisible(false);
-        panel.add(HorizontalSetUpLabel,gbc);
-        gbc.gridx=5;
+        hiddenComponentsPanel.add(HorizontalSetUpLabel);
+
         //Create ComboBox for TriangleSetUpSelector
         String[] horizontalSetUpItems = {"∆ιάταξη επίπεδη οριζόντια", "∆ιάταξη επίπεδη κατακόρυφη"};
         HorizontalSetUpSelector = new JComboBox<>(horizontalSetUpItems);
@@ -221,15 +296,14 @@ public class MyFrame extends JFrame {
         HorizontalSetUpSelector.setEditable(false);
         HorizontalSetUpSelector.setVisible(false);
         HorizontalSetUpSelector.setEnabled(false);
-        panel.add(HorizontalSetUpSelector,gbc);
-        gbc.gridx=0;
-        gbc.gridy=2;
+        hiddenComponentsPanel.add(HorizontalSetUpSelector);
+
 
         //Create JLabel for CrossSection
         CrossSectionLabel = new JLabel("Διατομή αγωγών σε mm"+"\u00b2"+":");
         CrossSectionLabel.setVisible(false);
-        panel.add(CrossSectionLabel,gbc);
-        gbc.gridx=1;
+        topPanel.add(CrossSectionLabel);
+
         //Create ComboBox for CrossSection Selector for 52-K1 and 52-K3 Copper
         String[] crossSectionArrayType1Copper = new String[]{"1.5", "2.5", "4", "6", "10", "16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300"};
         CrossSectionType1CopperSelector = new JComboBox<>(crossSectionArrayType1Copper);
@@ -239,7 +313,7 @@ public class MyFrame extends JFrame {
         CrossSectionType1CopperSelector.setEditable(false);
         CrossSectionType1CopperSelector.setVisible(false);
         CrossSectionType1CopperSelector.setEnabled(false);
-        panel.add(CrossSectionType1CopperSelector,gbc);
+        topPanel.add(CrossSectionType1CopperSelector);
 
         //Create ComboBox for CrossSection Selector for 52-K1 and 52-K3 Aluminum
         String[] crossSectionArrayType1Aluminum = new String[]{"16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300"};
@@ -250,7 +324,7 @@ public class MyFrame extends JFrame {
         CrossSectionType1AluminumSelector.setEditable(false);
         CrossSectionType1AluminumSelector.setVisible(false);
         CrossSectionType1AluminumSelector.setEnabled(false);
-        panel.add(CrossSectionType1AluminumSelector,gbc);
+        topPanel.add(CrossSectionType1AluminumSelector);
 
         //Create ComboBox for CrossSection Selector for 52-K2 Copper
         String[] crossSectionArrayType2Copper = new String[]{"1.5", "2.5", "4", "6", "10", "16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300", "400", "500", "630"};
@@ -261,7 +335,7 @@ public class MyFrame extends JFrame {
         CrossSectionType2CopperSelector.setEditable(false);
         CrossSectionType2CopperSelector.setVisible(false);
         CrossSectionType2CopperSelector.setEnabled(false);
-        panel.add(CrossSectionType2CopperSelector,gbc);
+        topPanel.add(CrossSectionType2CopperSelector);
 
         //Create ComboBox for CrossSection Selector for 52-K2 Aluminum
         String[] crossSectionArrayType2Aluminum = new String[]{"16", "25", "35", "50", "70", "95", "120", "150", "185", "240", "300", "400", "500", "630"};
@@ -272,30 +346,29 @@ public class MyFrame extends JFrame {
         CrossSectionType2AluminumSelector.setEditable(false);
         CrossSectionType2AluminumSelector.setVisible(false);
         CrossSectionType2AluminumSelector.setEnabled(false);
-        panel.add(CrossSectionType2AluminumSelector,gbc);
-        gbc.gridx=0;
-        gbc.gridy=3;
+        topPanel.add(CrossSectionType2AluminumSelector);
+
 
         //Create ComboBox for CurrentCalculatorButton
         CurrentCalculatorButton = new JButton("Υπολογισμός");
         CurrentCalculatorButtonListener ccbl = new CurrentCalculatorButtonListener();
         CurrentCalculatorButton.addActionListener(ccbl);
-        panel.add(CurrentCalculatorButton,gbc);
-        gbc.gridx=0;
-        gbc.gridy=4;
+        bottomPanel.add(CurrentCalculatorButton);
+
 
         //Label of Label
         LabelofResultLabel = new JLabel("Μέγιστο ρεύμα:");
-        panel.add(LabelofResultLabel,gbc);
+        bottomPanel.add(LabelofResultLabel);
         //Result Printing Label
-        gbc.gridx=1;
+
         ResultLabel = new JLabel();
-        panel.add(ResultLabel,gbc);
+        bottomPanel.add(ResultLabel);
 
 
-        this.setResizable(true);
+        this.setContentPane(framePanel);
+        this.setResizable(false);
         this.setVisible(true);
-        this.setSize(500, 500);
+        this.pack();
         this.setTitle("Μέγιστα επιτρεπόμενα ρεύματα (σε A).");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -574,43 +647,43 @@ public class MyFrame extends JFrame {
             switch (cableIndex){
                 case 0:
                 if (buildInOrWallMountedCablesErrorCheck())
-                    JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(framePanel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
                 else{
                     binc = new BuildInCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
                     binc.setMulticore(multicore);
                     binc.setPipe(pipe);
-                    ResultLabel.setText(binc.getMaxCurrent()+"A");
+                    ResultLabel.setText(binc.getMaxCurrent());
                 }
                     break;
                 case 1:
                 if (buildInOrWallMountedCablesErrorCheck())
-                    JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(framePanel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
                 else {
                     wmc = new WallMountedCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
                     wmc.setMulticore(multicore);
                     wmc.setPipe(pipe);
-                    ResultLabel.setText(wmc.getMaxCurrent()+"A");
+                    ResultLabel.setText(wmc.getMaxCurrent());
                 }
                     break;
                 case 2:
                 if (aerialCableErrorCheck())
-                    JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(framePanel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
                 else {
                     ac = new AerialCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
                     ac.setMulticore(multicore);
                         ac.setContact(contact);
                         ac.setTriangleSetUp(triangleSetUp);
                         ac.setHorizontalSetUp(horizontalSetUp);
-                        ResultLabel.setText(ac.getMaxCurrent()+"A");
+                        ResultLabel.setText(ac.getMaxCurrent());
                 }
                     break;
                 case 3:
                 if (onGroundCableErrorCheck())
-                    JOptionPane.showMessageDialog(panel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
-                else
+                    JOptionPane.showMessageDialog(framePanel, "Συμπληρώστε όλα τα πεδία", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+                else {
                     ogc = new OnGroundCable(conductor, insulation, chargedConductorsNum, crossSectionIndex);
-                    ResultLabel.setText(ogc.getMaxCurrent()+"A");
-
+                    ResultLabel.setText(ogc.getMaxCurrent());
+                }
                     break;
             }
 
@@ -712,7 +785,6 @@ public class MyFrame extends JFrame {
         HorizontalSetUpSelector.setVisible(true);
         HorizontalSetUpSelector.setEnabled(true);
         HorizontalSetUpSelector.setSelectedIndex(-1);
-
     }
 
     private void resetCrossSectionType1Copper() {
@@ -728,6 +800,7 @@ public class MyFrame extends JFrame {
         CrossSectionType1CopperSelector.setVisible(true);
         CrossSectionType1CopperSelector.setEnabled(true);
         CrossSectionType1CopperSelector.setSelectedIndex(0);
+        pack();
     }
 
     private void resetCrossSectionType1Aluminum() {
@@ -743,6 +816,7 @@ public class MyFrame extends JFrame {
         CrossSectionType1AluminumSelector.setVisible(true);
         CrossSectionType1AluminumSelector.setEnabled(true);
         CrossSectionType1AluminumSelector.setSelectedIndex(0);
+        pack();
     }
 
     private void resetCrossSectionType2Copper() {
@@ -758,6 +832,7 @@ public class MyFrame extends JFrame {
         CrossSectionType2CopperSelector.setVisible(true);
         CrossSectionType2CopperSelector.setEnabled(true);
         CrossSectionType2CopperSelector.setSelectedIndex(0);
+        pack();
     }
 
     private void resetCrossSectionType2Aluminum() {
@@ -773,6 +848,7 @@ public class MyFrame extends JFrame {
         CrossSectionType2AluminumSelector.setVisible(true);
         CrossSectionType2AluminumSelector.setEnabled(true);
         CrossSectionType2AluminumSelector.setSelectedIndex(0);
+        pack();
     }
 
     private void resetAllCrossSection(){

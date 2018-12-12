@@ -134,6 +134,6 @@ public class AerialCable extends Cable {
         if (tempMaxCurrent==-1)
             return "Δεν υπάρχει αποτέλεσμα γι'αυτες τις τιμές.";
         else
-            return Double.toString(tempMaxCurrent);
+            return Double.toString(tempMaxCurrent)+"A";
     }
 }
